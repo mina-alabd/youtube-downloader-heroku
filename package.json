@@ -7,7 +7,7 @@
     "server": "node index.js",
     "app": "npm start --prefix front-end",
     "dev": "concurrently \"npm run server \" \"npm run app \"",
-    "heroku-postbuild": "npm install --prefix front-end && npm run build --prefix front-end"
+    "heroku-postbuild": "npm install --prefix front-end && npm install && npm run build --prefix front-end"
   },
   "author": "",
   "license": "ISC",
