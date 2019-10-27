@@ -26,6 +26,7 @@ function App() {
   const [errmsg, seterrmsg] = useState("");
   const [totalsize, settotalsize] = useState(0);
   let title = "download";
+
   const download = e => {
     //const url = "https://youtu.be/IGQBtbKSVhY";
     const url = data;
@@ -114,6 +115,7 @@ function App() {
 
       <MuiThemeProvider theme={theme}>
         <TextField
+          autoFocus={true}
           autoComplete="off"
           disabled={disablebtn}
           onChange={e => {
