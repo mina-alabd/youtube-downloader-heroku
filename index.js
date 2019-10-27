@@ -28,14 +28,25 @@ app.get("/download", (req, res) => {
   console.log(req.query.videoId);
   const videoId = req.query.videoId;
   console.log("downloading audio track");
+  if (videoId === "") {
+    res.status(400).send({
+      message: "field empty"
+    });
+  }
 
   ytdl(videoId, {
     filter: format => format.container === "m4a" && !format.encoding,
     quality: "highestaudio"
   })
-    .on("error", console.error)
+    .on("error", error => {
+      //console.error;
+      res.status(400).send({
+        message: "something went wrong"
+      });
+    })
     .on("progress", (chunkLength, downloaded, total) => {
       const percent = downloaded / total;
+
       readline.cursorTo(process.stdout, 0);
       process.stdout.write(`${(percent * 100).toFixed(2)}% downloaded `);
       process.stdout.write(
@@ -46,15 +57,49 @@ app.get("/download", (req, res) => {
         ).toFixed(2)}MB)`
       );
     })
+
     .pipe(res);
 });
+// app.get("/info", (req, res) => {
+//   const videoId = req.query.videoId;
+//   if (videoId === "") {
+//     res.status(400).send({
+//       message: "field empty"
+//     });
+//   }
+//   ytdl
+//     .getInfo(videoId)
+
+//     .then(info => {
+//       console.log(info.title);
+
+//       res.send(info.title);
+//     });
+// });
 app.get("/info", (req, res) => {
   const videoId = req.query.videoId;
-  ytdl.getInfo(videoId).then(info => {
-    console.log(info.title);
+  if (videoId === "") {
+    res.status(400).send({
+      message: "field empty"
+    });
+  }
+  ytdl
+    .getInfo(videoId, {
+      filter: format => format.container === "m4a" && !format.encoding,
+      quality: "highestaudio"
+    })
+    .then(info => {
+      console.log(info.title);
 
-    res.send(info.title);
-  });
+      res.send(info);
+    })
+    .catch(error => {
+      console.log(error.message);
+
+      res.send(400, {
+        message: error.message
+      });
+    });
 });
 if (process.env.NODE_ENV === "production") {
   app.use(express.static("front-end/build"));
