@@ -14,20 +14,10 @@ const port = process.env.PORT || 5000;
 const readline = require("readline");
 app.use(cors());
 
-// app.post("/create-pdf", (req, res) => {
-//   pdf.create(pdfTemplate(req.body), {}).toFile("result.pdf", err => {
-//     if (err) {
-//       res.send(Promise.reject());
-//     }
-
-//     res.send(Promise.resolve());
-//   });
-// });
-
 app.get("/download", (req, res) => {
-  console.log(req.query.videoId);
+  //console.log(req.query.videoId);
   const videoId = req.query.videoId;
-  console.log("downloading audio track");
+  //console.log("downloading audio track");
   if (videoId === "") {
     res.status(400).send({
       message: "field empty"
@@ -36,7 +26,7 @@ app.get("/download", (req, res) => {
 
   ytdl(videoId, {
     filter: format => format.container === "m4a" && !format.encoding,
-    quality: "highestaudio"
+    quality: "highest"
   })
     .on("error", error => {
       //console.error;
@@ -60,6 +50,41 @@ app.get("/download", (req, res) => {
 
     .pipe(res);
 });
+
+app.get("/info", (req, res) => {
+  const videoId = req.query.videoId;
+  if (videoId === "") {
+    res.status(400).send({
+      message: "field empty"
+    });
+  }
+  ytdl
+    .getInfo(videoId, {
+      filter: format => format.container === "m4a" && !format.encoding,
+      quality: "highestaudio"
+    })
+    .then(info => {
+      //console.log(info.title);
+
+      res.send(info);
+    })
+    .catch(error => {
+      //console.log(error.message);
+
+      res.send(400, {
+        message: error.message
+      });
+    });
+});
+if (process.env.NODE_ENV === "production") {
+  app.use(express.static("front-end/build"));
+  app.get("*", (req, res) => {
+    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
+  });
+}
+//module.exports.handler = serverless(app);
+app.listen(port, () => console.log(`Listening on port ${port}`));
+
 // app.get("/info", (req, res) => {
 //   const videoId = req.query.videoId;
 //   if (videoId === "") {
@@ -76,39 +101,6 @@ app.get("/download", (req, res) => {
 //       res.send(info.title);
 //     });
 // });
-app.get("/info", (req, res) => {
-  const videoId = req.query.videoId;
-  if (videoId === "") {
-    res.status(400).send({
-      message: "field empty"
-    });
-  }
-  ytdl
-    .getInfo(videoId, {
-      filter: format => format.container === "m4a" && !format.encoding,
-      quality: "highestaudio"
-    })
-    .then(info => {
-      console.log(info.title);
-
-      res.send(info);
-    })
-    .catch(error => {
-      console.log(error.message);
-
-      res.send(400, {
-        message: error.message
-      });
-    });
-});
-if (process.env.NODE_ENV === "production") {
-  app.use(express.static("front-end/build"));
-  app.get("*", (req, res) => {
-    res.sendFile(path.resolve(__dirname, "frontend", "build", "index.html"));
-  });
-}
-//module.exports.handler = serverless(app);
-app.listen(port, () => console.log(`Listening on port ${port}`));
 
 // let video = ytdl(videoId, {
 //   filter: format => format.container === "mp4" && format.audioEncoding,

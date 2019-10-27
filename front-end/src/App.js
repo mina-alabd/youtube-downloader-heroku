@@ -7,6 +7,7 @@ import { saveAs } from "file-saver";
 import { Button } from "@material-ui/core";
 //import { ScaleLoader } from "react-spinners";
 import CircularProgress from "@material-ui/core/CircularProgress";
+
 //const ffmpeg = require("fluent-ffmpeg");
 
 const theme = createMuiTheme({
@@ -20,14 +21,14 @@ const theme = createMuiTheme({
 function App() {
   const [data, setdata] = useState("");
   const [disablebtn, setdisablebtn] = useState(false);
-  const [songtitle, setsongtitle] = useState("downloading song ");
+  const [songtitle, setsongtitle] = useState("downloading ");
   const [err, seterr] = useState(false);
   const [progress, setprogress] = useState(0);
   const [errmsg, seterrmsg] = useState("");
   const [totalsize, settotalsize] = useState(0);
   let title = "download";
 
-  const download = e => {
+  const download = () => {
     //const url = "https://youtu.be/IGQBtbKSVhY";
     const url = data;
     // const audioOutput = path.resolve(__dirname, "sound.mp4");
@@ -47,7 +48,7 @@ function App() {
       })
       .then(info => {
         //console.log(info);
-        setsongtitle("downloading song " + info.data.title);
+        setsongtitle("downloading " + info.data.title);
         title = info.data.title;
         const formats = info.data.formats;
         formats.map(i => {
@@ -128,6 +129,13 @@ function App() {
           margin="normal"
           style={{ margin: 30 }}
           helperText={errmsg}
+          onKeyPress={e => {
+            if (e.key === "Enter") {
+              seterr(false);
+              setdisablebtn(true);
+              download();
+            }
+          }}
         />
       </MuiThemeProvider>
 
@@ -159,7 +167,7 @@ function App() {
         onClick={e => {
           seterr(false);
           setdisablebtn(true);
-          download(e);
+          download();
         }}
       >
         Download
