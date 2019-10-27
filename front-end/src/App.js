@@ -144,7 +144,9 @@ function App() {
           style={{
             display: "flex",
             flexDirection: "column",
-            alignItems: "center"
+            alignItems: "center",
+            marginBottom: 15,
+            color: "white"
           }}
         >
           <p>

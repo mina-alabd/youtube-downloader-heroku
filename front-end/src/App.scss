@@ -39,3 +39,15 @@ body #root {
   flex-direction: column;
 }
 /*# sourceMappingURL=App.css.map */
+.MuiTextField-root {
+  color: white;
+
+  input {
+    color: white;
+  }
+
+  .MuiFormLabel-root,
+  .MuiFormLabel-root.Mui-focused {
+    color: white;
+  }
+}

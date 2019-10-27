@@ -38,4 +38,16 @@ body #root {
   -ms-flex-direction: column;
   flex-direction: column;
 }
+.MuiTextField-root {
+  color: white;
+}
+
+.MuiTextField-root input {
+  color: white;
+}
+
+.MuiTextField-root .MuiFormLabel-root,
+.MuiTextField-root .MuiFormLabel-root.Mui-focused {
+  color: white;
+}
 /*# sourceMappingURL=App.css.map */
